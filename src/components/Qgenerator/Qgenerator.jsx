@@ -5,7 +5,7 @@ import Quotetext from './Quotetext'
 
 export default function Qgenerator() {
   return (
-    <main className='bg-amber-50 p-4 min-h-200'>
+    <main className='bg-amber-50 p-4 min-h-[200px]'>
        <Topbar/>
        <Searchbar/>
        <Quotetext/>
