@@ -1,7 +1,7 @@
 
 # React + Tailwind Quote Generator
 
-![App Screenshot](./screenshot.png)
+![App Screenshot](https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSxfRgvAXX2b07HpbN90lWdijRgOsMcM9aUwQ&s)
 
 ---
 
