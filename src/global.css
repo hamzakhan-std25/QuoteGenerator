@@ -32,4 +32,13 @@
    -moz-osx-font-smoothing: grayscale;
  }
 
+ .btn {
+  @apply bg-gradient-to-r mb-4 from-blue-700 to-fuchsia-700  p-2 rounded-xl text-white font-semibold flex justify-center items-center gap-2 pr-4 cursor-pointer hover:scale-105 transition-all
+  /*      */
+
+}
+
+
+ 
+
  

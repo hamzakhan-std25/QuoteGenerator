@@ -6,8 +6,24 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
+# Dependency directories    
+node_modules/
+jspm_packages/
+# Optional npm cache directory
+.npm
+# Optional eslint cache
+.eslintcache
+# Optional REPL history
+.repl
+# Next.js build output
+.next
+# Nuxt.js build output
+.nuxt
+
 
 node_modules
+# Build output
+build   
 dist
 dist-ssr
 *.local
@@ -22,3 +38,10 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+.env
+*.env.local
+*.env.development.local
+*.env.test.local
+*.env.production.local
+.env.development
+.env.test
