@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import { FiLoader, FiRefreshCw, FiArrowLeft, FiArrowRight } from 'react-icons/fi'
 import { useQuotes } from './QuoteContext'
 
@@ -15,6 +15,40 @@ export default function
   const { tags, quotes, setQuotes } = useQuotes();
 
 
+  const touchStartX = useRef(null);
+
+  const handleTouchStart = (e) => {
+    touchStartX.current = e.touches[0].clientX;
+  };
+
+  const handleTouchEnd = (e) => {
+    if (touchStartX.current === null) return;
+
+    const touchEndX = e.changedTouches[0].clientX;
+    const diff = touchStartX.current - touchEndX;
+
+    if (Math.abs(diff) > 50) {
+      if (diff > 0) {
+        // swipe left → next
+        changeQuote(1);
+      } else {
+        // swipe right → prev
+        changeQuote(-1);
+      }
+    }
+
+    touchStartX.current = null;
+  };
+
+
+
+
+
+
+
+
+
+  // filter quotes based on selected tags
 
   function quotesFilter() {
     const selectedTags = Array.isArray(tags)
@@ -26,18 +60,6 @@ export default function
       : [];
     return filQuotes.length ? filQuotes : [{ body: "No quotes found for the selected tags.", author: "API" }];
   }
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -84,7 +106,7 @@ export default function
 
 
 
-
+  // useeffect for working on when ever tags or quotes change
   useEffect(() => {
     setFilterQuotes(quotesFilter());
     setIdx(0);
@@ -104,7 +126,7 @@ export default function
       console.log('fething quotes...')
 
       const url = `https://quotegenerator-backend-production.up.railway.app/api/quotes?page=${page}`;
-       
+
       const res = await fetch(url);
       if (!res.ok) throw new Error(`HTTP error! Status: ${res.status}`);
       const data = await res.json();
@@ -157,14 +179,23 @@ export default function
           {`${idx + 1} / ${filterQuotes.length}`}
         </span>
       </div>
-      <div className='border rounded border-blue-200 min-h-40 mb-8 p-4 italic text-lg font-semibold text-blue-600 bg-emerald-100 '>
+      <div
+        onTouchStart={handleTouchStart}
+        onTouchEnd={handleTouchEnd}
+        className=' border rounded border-blue-200 min-h-40 mb-8 p-4 italic text-lg font-semibold text-blue-600 bg-emerald-100 '>
 
-        {loading ? <div> <p className="text-gray-400 text-center">Fetching wisdom...</p>
-          <FiLoader className=' text-3xl w-full h-12 text-center' /></div>
-          : <div>
-            <div>{filterQuotes[idx] ? filterQuotes[idx].body : "--"}</div>
-            <span className='font-normal text-gray-600 block'>{filterQuotes[idx] ? filterQuotes[idx].author : "--"}--</span>
-            <span className='text-fuchsia-600 font-sm font-extralight  block float-end'>Tags: &#91; {renderTags()} &#93;</span>
+        {loading ?
+          <div> <p className="text-gray-400 text-center">Fetching wisdom...</p>
+            <FiLoader className=' text-3xl w-full h-12 text-center' /></div>
+
+          : <div className='flex justify-between flex-col '>
+
+            <div>
+              <div>{filterQuotes[idx] ? filterQuotes[idx].body : "--"}</div>
+              <span className='font-normal text-gray-600 block'>{filterQuotes[idx] ? filterQuotes[idx].author : "--"}--</span>
+            </div>
+
+            <span className=' mt-4 text-fuchsia-600 text-sm font-extralight  block ml-auto'>Tags: &#91; {renderTags()} &#93;</span>
           </div>
 
         }
@@ -175,8 +206,8 @@ export default function
       </div>
       <div className='flex justify-between items-center'>
         <div className='flex gap-2'>
-          <button onClick={changeQuote} value={-1} className='btn'> <FiArrowLeft /> Prev </button>
-          <button onClick={changeQuote} value={+1} className='btn'> Next <FiArrowRight /> </button>
+          <button onClick={()=> changeQuote(-1)}  className='btn'> <FiArrowLeft /> Prev </button>
+          <button onClick={()=> changeQuote(1)}  className='btn'> Next <FiArrowRight /> </button>
         </div>
         <button onClick={() => addToFavourite()} className='btn'>Add to Favourite</button>
       </div>
@@ -190,11 +221,11 @@ export default function
     if (filterQuotes[idx].body !== "--") {
       const favoriteQuotes = JSON.parse(localStorage.getItem('favoriteQuotes')) || [];
       const currentQuote = filterQuotes[idx];
-      console.log('favroties from localstroage :' , favoriteQuotes)
+      console.log('favroties from localstroage :', favoriteQuotes)
       if (!favoriteQuotes.some(quote => quote.id === currentQuote.id)) {
         const updatedFavorites = [...favoriteQuotes, currentQuote];
         localStorage.setItem('favoriteQuotes', JSON.stringify(updatedFavorites))
-        console.log('updated and current favroties : ' , updatedFavorites)
+        console.log('updated and current favroties : ', updatedFavorites)
       }
     }
 
@@ -205,8 +236,7 @@ export default function
 
 
 
-  function changeQuote(e) {
-    let val = Number(e.target.value)
+  function changeQuote(val) {
 
     if (val == -1 && idx == 0) {
       setIdx(filterQuotes.length - 1);
