@@ -52,7 +52,7 @@ export default function Searchbar() {
       const page=  Math.ceil(Math.random() * 12);
 
       try {
-        const url =`http://localhost:5000/api/quotes?filter=${input}&type=${keyword}&page=${page}`
+        const url =`https://quotegenerator-backend-production.up.railway.app/api/quotes?filter=${input}&type=${keyword}&page=${page}`
         const response = await fetch(url);
         console.log('search url : ', url);
 

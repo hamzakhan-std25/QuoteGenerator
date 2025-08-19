@@ -103,7 +103,7 @@ export default function
     try {
       console.log('fething quotes...')
 
-      const url = `http://localhost:5000/api/quotes?page=${page}`;
+      const url = `https://quotegenerator-backend-production.up.railway.app/api/quotes?page=${page}`;
        
       const res = await fetch(url);
       if (!res.ok) throw new Error(`HTTP error! Status: ${res.status}`);
